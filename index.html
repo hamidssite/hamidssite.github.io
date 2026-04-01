@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>For Anaya</title>
+    <style>
+        :root {
+            --pink: #ff2d55;
+            --bg: #ffffff;
+            --card: #f9f9f9;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            background-color: var(--bg);
+            font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;A
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+        }
+
+        #mobile-container {
+            width: 100%;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .step {
+            animation: fadeIn 0.4s ease-out;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 { font-size: 28px; color: #111; margin-bottom: 10px; }
+        p { font-size: 18px; color: #666; margin-bottom: 30px; line-height: 1.4; }
+
+        /* Mobile-Optimized Buttons */
+        .btn {
+            width: 100%;
+            max-width: 280px;
+            padding: 18px;
+            font-size: 18px;
+            font-weight: 700;
+            border-radius: 15px;
+            border: none;
+            margin-bottom: 15px;
+            transition: transform 0.1s active;
+        }
+
+        .btn-main { background: var(--pink); color: white; box-shadow: 0 5px 15px rgba(255, 45, 85, 0.3); }
+        .btn-alt { background: #eee; color: #444; }
+
+        input {
+            width: 100%;
+            max-width: 280px;
+            padding: 18px;
+            font-size: 20px;
+            border: 2px solid #eee;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+            outline: none;
+        }
+        input:focus { border-color: var(--pink); }
+
+        .hidden { display: none; }
+
+        #log-display {
+            background: #eee;
+            padding: 15px;
+            border-radius: 12px;
+            font-family: monospace;
+            font-size: 14px;
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 280px;
+            text-align: left;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <div id="mobile-container">
+        
+        <div id="s1" class="step">
+            <h1>Question 1</h1>
+            <p>Do you actually like me ? Be honest, Annu.</p>
+            <button class="btn btn-main" onclick="record('Like Me', 'YES'); go(1,2)">Yes, I do</button>
+            <button class="btn btn-alt" onclick="record('Like Me', 'NO'); go(1,2)">No</button>
+        </div>
+
+        <div id="s2" class="step hidden">
+            <h1>Question 2</h1>
+            <p>Would you like to hangout sometime? 🍕</p>
+            <button class="btn btn-main" onclick="record('Date', 'YES'); go(2,3)">I'm down!</button>
+            <button class="btn btn-alt" onclick="record('Date', 'NO'); go(2,3)">Probably not</button>
+        </div>
+
+        <div id="s3" class="step hidden">
+            <h1>Wait! 🛑</h1>
+            <p>To get the final code, you must send your answers to <b>Hamid</b> first.</p>
+            <div id="log-display"></div>
+            <button class="btn btn-main" onclick="copyLog()">Copy & Ask Hamid for Code</button>
+            <p style="font-size: 14px; margin-top: 10px;">Already have the code? <br><span style="color:var(--pink)" onclick="go(3,4)">Click here to enter it</span></p>
+        </div>
+
+        <div id="s4" class="step hidden">
+            <h1>Enter Code</h1>
+            <p>Hamid will give you the code.</p>
+            <input type="text" id="final-code" placeholder="Enter Secret Key">
+            <button class="btn btn-main" onclick="checkCode()">Unlock Final Question</button>
+            <button class="btn btn-alt" onclick="go(4,3)">Back</button>
+        </div>
+
+        <div id="s5" class="step hidden">
+            <h1 style="color:var(--pink)">The Last Thing...</h1>
+            <p>Anaya, you're the one. <br><b>Will you be mine?</b></p>
+            <button class="btn btn-main" onclick="finish()">YES, FOREVER</button>
+        </div>
+
+        <div id="s6" class="step hidden">
+            <h1>❤️ SUCCESS ❤️</h1>
+            <p>Go tell Hamid your final answer on Instagram!</p>
+        </div>
+
+    </div>
+
+    <script>
+        let answers = {};
+
+        function record(q, a) {
+            answers[q] = a;
+        }
+
+        function go(curr, next) {
+            document.getElementById(`s${curr}`).classList.add('hidden');
+            document.getElementById(`s${next}`).classList.remove('hidden');
+            
+            if (next === 3) {
+                document.getElementById('log-display').innerText = 
+                    `LOG DATA:\n1. Like Me: ${answers['Like Me']}\n2. Date: ${answers['Date']}\nStatus: PENDING`;
+            }
+        }
+
+        function copyLog() {
+            const logText = `Hamid, here are my answers:\n- Like you: ${answers['Like Me']}\n- Date: ${answers['Date']}\n\nGive me the code now!`;
+            navigator.clipboard.writeText(logText).then(() => {
+                alert("Answers copied! Now DM them to Hamid on Instagram to get the code.");
+                go(3,4); // Move to code entry screen
+            });
+        }
+
+        function checkCode() {
+            const code = document.getElementById('final-code').value.toLowerCase().trim();
+            if (code === 'annu') {
+                go(4,5);
+            } else {
+                alert("Wrong code. Hamid hasn't authorized you yet!");
+            }
+        }
+
+        function finish() {
+            alert("Perfect! Now tell him on IG! ❤️");
+            go(5,6);
+        }
+    </script>
+</body>
+</html>
